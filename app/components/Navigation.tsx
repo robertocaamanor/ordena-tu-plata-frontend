@@ -33,7 +33,7 @@ const Navigation = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <Link href="/dashboard" className="flex-shrink-0">
-                <h1 className="text-xl font-bold text-indigo-600">ContabilizadorApp</h1>
+                <h1 className="text-xl font-bold text-indigo-600">Ordena tu Plata</h1>
               </Link>
               {user && (
                 <p className="text-sm text-gray-600 mt-1">

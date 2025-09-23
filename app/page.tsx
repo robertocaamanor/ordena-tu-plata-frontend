@@ -6,7 +6,7 @@ export default function Home() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
-            ContabilizadorApp
+            Ordena tu Plata
           </h1>
           <p className="text-lg text-gray-600 mb-8">
             Organiza tus finanzas de manera inteligente

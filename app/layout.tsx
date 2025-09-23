@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ContabilizadorApp",
+  title: "Ordena tu Plata",
   description: "Gestiona tus finanzas de manera inteligente",
 };
 
