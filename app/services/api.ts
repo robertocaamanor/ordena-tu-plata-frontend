@@ -85,12 +85,6 @@ class ApiService {
   ): Promise<T> {
     const token = this.getToken();
     
-    // Logging detallado para debugging
-    console.log('=== API Request Debug ===');
-    console.log('Endpoint:', endpoint);
-    console.log('Token disponible:', !!token);
-    console.log('Token value:', token ? `${token.substring(0, 20)}...` : 'null');
-    
     const config: RequestInit = {
       ...options,
       headers: {
@@ -100,14 +94,8 @@ class ApiService {
       },
     };
 
-    console.log('Headers enviados:', JSON.stringify(config.headers, null, 2));
-    console.log('URL completa:', `${this.baseURL}${endpoint}`);
-
     try {
       const response = await fetch(`${this.baseURL}${endpoint}`, config);
-      
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -116,7 +104,6 @@ class ApiService {
       }
 
       const result = await response.json();
-      console.log('Respuesta exitosa:', result);
       return result;
     } catch (error) {
       console.error('API request failed:', error);
@@ -128,21 +115,14 @@ class ApiService {
   private getToken(): string | null {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('access_token');
-      console.log('getToken called - window available:', typeof window !== 'undefined');
-      console.log('Token from localStorage:', token ? `${token.substring(0, 20)}...` : 'null');
       return token;
     }
-    console.log('getToken called - window not available (SSR)');
     return null;
   }
 
   private setToken(token: string): void {
     if (typeof window !== 'undefined') {
-      console.log('setToken called:', token ? `${token.substring(0, 20)}...` : 'null');
       localStorage.setItem('access_token', token);
-      console.log('Token guardado en localStorage');
-    } else {
-      console.log('setToken called but window not available (SSR)');
     }
   }
 
@@ -155,23 +135,14 @@ class ApiService {
 
   // Métodos de autenticación
   async login(data: LoginRequest): Promise<AuthResponse> {
-    console.log('=== Login Method Debug ===');
-    console.log('Login data:', { email: data.email, password: '[HIDDEN]' });
-    
     const response = await this.request<AuthResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(data),
     });
 
-    console.log('Login response received:', {
-      access_token: response.access_token ? `${response.access_token.substring(0, 20)}...` : 'null',
-      user: response.user
-    });
-
     this.setToken(response.access_token);
     if (typeof window !== 'undefined') {
       localStorage.setItem('user', JSON.stringify(response.user));
-      console.log('Token y usuario guardados en localStorage');
     }
 
     return response;

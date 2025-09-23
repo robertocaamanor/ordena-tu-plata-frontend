@@ -24,11 +24,8 @@ export default function ProfilePage() {
   const loadUserData = async () => {
     try {
       setIsLoading(true);
-      console.log('Cargando datos del usuario...');
-      console.log('Token disponible:', !!apiService.isAuthenticated());
       
       const data = await apiService.getCurrentUser();
-      console.log('Datos del usuario cargados:', data);
       
       setUserData(data);
       setFormData({

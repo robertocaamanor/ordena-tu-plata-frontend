@@ -26,12 +26,6 @@ export default function DashboardPage() {
           apiService.getPayments()
         ]);
 
-        console.log('Dashboard data loaded successfully:', {
-          expenses: expensesData.length,
-          debts: debtsData.length,
-          payments: paymentsData.length
-        });
-
         setExpenses(expensesData);
         setDebts(debtsData);
         setPayments(paymentsData);
