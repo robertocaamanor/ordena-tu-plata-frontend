@@ -15,7 +15,7 @@ Una aplicación web de gestión financiera personal construida con [Next.js](htt
 ## Estructura del Proyecto
 
 ```
-contabilizador-frontend/
+ordena-tu-plata-frontend/
 ├── app/                    # App Router de Next.js 13+
 │   ├── components/         # Componentes reutilizables
 │   │   ├── Navigation.tsx  # Componente de navegación
@@ -75,7 +75,7 @@ contabilizador-frontend/
 1. **Clona el repositorio**
    ```bash
    git clone https://github.com/robertocaamanor/ordena-tu-plata-frontend.git
-   cd contabilizador-frontend
+   cd ordena-tu-plata-frontend
    ```
 
 2. **Instala las dependencias**
