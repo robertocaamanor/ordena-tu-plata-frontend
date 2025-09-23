@@ -13,6 +13,7 @@ export default function DashboardPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showFinancialData, setShowFinancialData] = useState(true);
 
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -99,8 +100,35 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="mt-2 text-gray-600">Resumen de tu situación financiera</p>
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+                <p className="mt-2 text-gray-600">Resumen de tu situación financiera</p>
+              </div>
+              
+              {/* Switch para mostrar/ocultar datos financieros */}
+              <div className="flex items-center space-x-3">
+                <span className="text-sm font-medium text-gray-700">
+                  {showFinancialData ? 'Ocultar cifras' : 'Mostrar cifras'}
+                </span>
+                <button
+                  onClick={() => setShowFinancialData(!showFinancialData)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                    showFinancialData ? 'bg-indigo-600' : 'bg-gray-200'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      showFinancialData ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+                <span className="text-sm text-gray-500">
+                  👁️
+                </span>
+              </div>
+            </div>
+            
             {error && (
               <div className="mt-4 bg-red-50 border border-red-200 rounded-md p-4">
                 <p className="text-sm text-red-600">{error}</p>
@@ -119,7 +147,9 @@ export default function DashboardPage() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Gastos del Mes</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.totalExpenses)}</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {showFinancialData ? formatCurrency(stats.totalExpenses) : '••••••'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -133,7 +163,9 @@ export default function DashboardPage() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Deudas Totales</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.totalDebts)}</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {showFinancialData ? formatCurrency(stats.totalDebts) : '••••••'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -147,7 +179,9 @@ export default function DashboardPage() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Presupuesto Mensual</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.monthlyBudget)}</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {showFinancialData ? formatCurrency(stats.monthlyBudget) : '••••••'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -161,7 +195,9 @@ export default function DashboardPage() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Presupuesto Restante</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(remainingBudget)}</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {showFinancialData ? formatCurrency(remainingBudget) : '••••••'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -176,7 +212,13 @@ export default function DashboardPage() {
               </div>
               <div className="p-6">
                 <div className="space-y-4">
-                  {recentExpenses.length === 0 ? (
+                  {!showFinancialData ? (
+                    <div className="text-center py-8">
+                      <div className="text-4xl mb-4">🔒</div>
+                      <p className="text-gray-500">Datos ocultos</p>
+                      <p className="text-sm text-gray-400">Activa el switch para ver los gastos</p>
+                    </div>
+                  ) : recentExpenses.length === 0 ? (
                     <p className="text-center text-gray-500 py-4">No hay gastos registrados</p>
                   ) : (
                     recentExpenses.map((expense) => (
@@ -195,11 +237,13 @@ export default function DashboardPage() {
                     ))
                   )}
                 </div>
-                <div className="mt-6">
-                  <a href="/expenses" className="text-indigo-600 hover:text-indigo-500 text-sm font-medium">
-                    Ver todos los gastos →
-                  </a>
-                </div>
+                {showFinancialData && (
+                  <div className="mt-6">
+                    <a href="/expenses" className="text-indigo-600 hover:text-indigo-500 text-sm font-medium">
+                      Ver todos los gastos →
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -210,7 +254,13 @@ export default function DashboardPage() {
               </div>
               <div className="p-6">
                 <div className="space-y-4">
-                  {upcomingDebts.length === 0 ? (
+                  {!showFinancialData ? (
+                    <div className="text-center py-8">
+                      <div className="text-4xl mb-4">🔒</div>
+                      <p className="text-gray-500">Datos ocultos</p>
+                      <p className="text-sm text-gray-400">Activa el switch para ver las deudas</p>
+                    </div>
+                  ) : upcomingDebts.length === 0 ? (
                     <p className="text-center text-gray-500 py-4">No hay deudas pendientes</p>
                   ) : (
                     upcomingDebts.map((debt) => (
@@ -241,11 +291,13 @@ export default function DashboardPage() {
                     ))
                   )}
                 </div>
-                <div className="mt-6">
-                  <a href="/debts" className="text-indigo-600 hover:text-indigo-500 text-sm font-medium">
-                    Ver todas las deudas →
-                  </a>
-                </div>
+                {showFinancialData && (
+                  <div className="mt-6">
+                    <a href="/debts" className="text-indigo-600 hover:text-indigo-500 text-sm font-medium">
+                      Ver todas las deudas →
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </div>
