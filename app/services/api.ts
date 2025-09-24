@@ -24,6 +24,8 @@ export interface RegisterRequest {
   email: string;
   password: string;
   salary: number;
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface AuthResponse {
@@ -31,6 +33,8 @@ export interface AuthResponse {
   user: {
     id: string;
     email: string;
+    firstName?: string;
+    lastName?: string;
     salary: number;
     createdAt: string;
     updatedAt: string;
@@ -50,6 +54,7 @@ export interface Expense {
 
 export interface Debt {
   id: string;
+  name?: string;
   total: number;
   remaining: number;
   dueDate: string;
@@ -70,6 +75,8 @@ export interface Payment {
 
 export interface User {
   id: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
   salary: number;
   createdAt: string;

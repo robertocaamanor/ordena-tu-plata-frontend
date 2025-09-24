@@ -10,7 +10,9 @@ export default function ProfilePage() {
   const [userData, setUserData] = useState<User | null>(null);
   const [formData, setFormData] = useState({
     email: '',
-    salary: ''
+    salary: '',
+    firstName: '',
+    lastName: ''
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,7 +32,9 @@ export default function ProfilePage() {
       setUserData(data);
       setFormData({
         email: data.email,
-        salary: data.salary.toString()
+        salary: data.salary.toString(),
+        firstName: data.firstName || '',
+        lastName: data.lastName || '',
       });
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -63,7 +67,9 @@ export default function ProfilePage() {
     if (userData) {
       setFormData({
         email: userData.email,
-        salary: userData.salary.toString()
+        salary: userData.salary.toString(),
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
       });
     }
     setError('');
@@ -79,7 +85,9 @@ export default function ProfilePage() {
     try {
       const updateData = {
         email: formData.email,
-        salary: Number(formData.salary)
+        salary: Number(formData.salary),
+        firstName: formData.firstName,
+        lastName: formData.lastName,
       };
 
       const updatedUser = await apiService.updateUser(updateData);
@@ -178,6 +186,35 @@ export default function ProfilePage() {
                       required
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       placeholder="tu@email.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nombre
+                    </label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      placeholder="Roberto"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Apellido
+                    </label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      placeholder="Caamaño"
                     />
                   </div>
                   

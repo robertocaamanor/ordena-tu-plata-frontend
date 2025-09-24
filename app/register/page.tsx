@@ -7,6 +7,8 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     salary: ''
@@ -23,7 +25,13 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      await register(formData.email, formData.password, Number(formData.salary));
+      await register(
+        formData.email,
+        formData.password,
+        Number(formData.salary),
+        formData.firstName,
+        formData.lastName,
+      );
       // Redireccionar al dashboard después del registro exitoso
       router.push('/dashboard');
     } catch (error) {
@@ -75,6 +83,39 @@ export default function RegisterPage() {
                 onChange={handleChange}
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm disabled:bg-gray-100"
                 placeholder="usuario@ejemplo.com"
+              />
+            </div>
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                Nombre
+              </label>
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                required
+                disabled={isLoading}
+                value={formData.firstName}
+                onChange={handleChange}
+                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm disabled:bg-gray-100"
+                placeholder="Roberto"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                Apellido
+              </label>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                required
+                disabled={isLoading}
+                value={formData.lastName}
+                onChange={handleChange}
+                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm disabled:bg-gray-100"
+                placeholder="Caamaño"
               />
             </div>
             

@@ -9,6 +9,7 @@ export default function DebtsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingDebt, setEditingDebt] = useState<Debt | null>(null);
   const [formData, setFormData] = useState({
+    name: '',
     total: '',
     remaining: '',
     dueDate: ''
@@ -36,7 +37,7 @@ export default function DebtsPage() {
   };
 
   const resetForm = () => {
-    setFormData({ total: '', remaining: '', dueDate: '' });
+    setFormData({ name: '', total: '', remaining: '', dueDate: '' });
     setEditingDebt(null);
     setShowForm(false);
     setError('');
@@ -45,6 +46,7 @@ export default function DebtsPage() {
   const handleEdit = (debt: Debt) => {
     setEditingDebt(debt);
     setFormData({
+      name: debt.name || '',
       total: debt.total.toString(),
       remaining: debt.remaining.toString(),
       dueDate: debt.dueDate.split('T')[0], // Convertir a formato YYYY-MM-DD
@@ -71,6 +73,7 @@ export default function DebtsPage() {
 
     try {
       const debtData = {
+        name: formData.name,
         total: Number(formData.total),
         remaining: Number(formData.remaining),
         dueDate: formData.dueDate
@@ -186,6 +189,21 @@ export default function DebtsPage() {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Nombre de la deuda
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Préstamo Banco XYZ"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
                         Monto Total (CLP)
                       </label>
                       <input
@@ -270,74 +288,56 @@ export default function DebtsPage() {
                   const isOverdue = new Date(debt.dueDate) < new Date();
                   const daysUntilDue = Math.ceil((new Date(debt.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
                   const progress = calculateProgress(debt.total, debt.remaining);
-                  
+
                   return (
                     <div key={debt.id} className="p-6 hover:bg-gray-50 transition-colors duration-150">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-3">
                             {isOverdue ? (
-                              <span className="inline-block px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded-full">
-                                Vencida
-                              </span>
+                              <span className="inline-block px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded-full">Vencida</span>
                             ) : daysUntilDue <= 7 ? (
-                              <span className="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
-                                Próxima a vencer
-                              </span>
+                              <span className="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">Próxima a vencer</span>
                             ) : (
-                              <span className="inline-block px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
-                                Al día
-                              </span>
+                              <span className="inline-block px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">Al día</span>
                             )}
-                            <span className="text-gray-500 text-sm">
-                              Vence el: {new Date(debt.dueDate).toLocaleDateString('es-CL')}
-                              {!isOverdue && daysUntilDue >= 0 && (
-                                <span> ({daysUntilDue === 0 ? 'Hoy' : `${daysUntilDue} día${daysUntilDue !== 1 ? 's' : ''}`})</span>
-                              )}
-                            </span>
+
+                            <div className="ml-3">
+                              <h3 className="text-lg font-semibold text-gray-900">{debt.name || 'Sin nombre'}</h3>
+                              <p className="text-gray-500 text-sm">
+                                Vence el: {new Date(debt.dueDate).toLocaleDateString('es-CL')}
+                                {!isOverdue && daysUntilDue >= 0 && (
+                                  <>{' ('}{daysUntilDue === 0 ? 'Hoy' : `${daysUntilDue} día${daysUntilDue !== 1 ? 's' : ''}`}{')'}</>
+                                )}
+                              </p>
+                            </div>
                           </div>
-                          
+
                           <div className="mb-3">
                             <div className="flex justify-between text-sm text-gray-600 mb-1">
                               <span>Progreso de pago</span>
                               <span>{Math.round(progress)}%</span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-2">
-                              <div 
-                                className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
-                                style={{ width: `${progress}%` }}
-                              ></div>
+                              <div className="bg-indigo-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
                             </div>
                           </div>
-                          
+
                           <div className="grid grid-cols-2 gap-4">
                             <div>
                               <p className="text-sm text-gray-600">Monto Total</p>
-                              <p className="text-lg font-semibold text-gray-900">
-                                {formatCurrency(debt.total)}
-                              </p>
+                              <p className="text-lg font-semibold text-gray-900">{formatCurrency(debt.total)}</p>
                             </div>
                             <div>
                               <p className="text-sm text-gray-600">Monto Restante</p>
-                              <p className="text-lg font-semibold text-red-600">
-                                {formatCurrency(debt.remaining)}
-                              </p>
+                              <p className="text-lg font-semibold text-red-600">{formatCurrency(debt.remaining)}</p>
                             </div>
                           </div>
                         </div>
+
                         <div className="flex space-x-2 ml-4">
-                          <button
-                            onClick={() => handleEdit(debt)}
-                            className="text-indigo-600 hover:text-indigo-800 text-sm font-medium transition-colors duration-200"
-                          >
-                            Editar
-                          </button>
-                          <button
-                            onClick={() => handleDelete(debt.id)}
-                            className="text-red-600 hover:text-red-800 text-sm font-medium transition-colors duration-200"
-                          >
-                            Eliminar
-                          </button>
+                          <button onClick={() => handleEdit(debt)} className="text-indigo-600 hover:text-indigo-800 text-sm font-medium transition-colors duration-200">Editar</button>
+                          <button onClick={() => handleDelete(debt.id)} className="text-red-600 hover:text-red-800 text-sm font-medium transition-colors duration-200">Eliminar</button>
                         </div>
                       </div>
                     </div>
