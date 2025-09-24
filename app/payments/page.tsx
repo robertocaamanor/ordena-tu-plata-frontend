@@ -15,6 +15,8 @@ export default function PaymentsPage() {
   });
   const [payments, setPayments] = useState<Payment[]>([]);
   const [debts, setDebts] = useState<Debt[]>([]);
+  const [isSelectFocused, setIsSelectFocused] = useState(false);
+  const [selectedDebtLabel, setSelectedDebtLabel] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -68,6 +70,22 @@ export default function PaymentsPage() {
   const getDebtInfo = (debtId: string) => {
     return debts.find(debt => debt.id === debtId);
   };
+
+  const buildDebtFullLabel = (debt: Debt) => {
+    return debt.name && debt.name.trim()
+      ? `${debt.name} — Deuda de ${formatCurrency(debt.remaining)} (Vence: ${new Date(debt.dueDate).toLocaleDateString('es-CL')})`
+      : `Deuda de ${formatCurrency(debt.remaining)} (Vence: ${new Date(debt.dueDate).toLocaleDateString('es-CL')})`;
+  };
+
+  // Mantener label completo para la deuda seleccionada (útil en móvil)
+  useEffect(() => {
+    if (formData.debtId) {
+      const d = getDebtInfo(formData.debtId);
+      setSelectedDebtLabel(d ? buildDebtFullLabel(d) : '');
+    } else {
+      setSelectedDebtLabel('');
+    }
+  }, [formData.debtId, debts]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -197,17 +215,37 @@ export default function PaymentsPage() {
                       <select
                         name="debtId"
                         value={formData.debtId}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                          handleChange(e);
+                          const d = debts.find(x => x.id === e.target.value);
+                          setSelectedDebtLabel(d ? buildDebtFullLabel(d) : '');
+                        }}
                         required
+                        onFocus={() => setIsSelectFocused(true)}
+                        onBlur={() => setIsSelectFocused(false)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       >
                         <option value="">Seleccionar deuda</option>
-                        {debts.map(debt => (
-                          <option key={debt.id} value={debt.id}>
-                            Deuda de {formatCurrency(debt.remaining)} (Vence: {new Date(debt.dueDate).toLocaleDateString('es-CL')})
-                          </option>
-                        ))}
+                        {debts.map(debt => {
+                          const fullLabel = debt.name && debt.name.trim()
+                            ? `${debt.name} — Deuda de ${formatCurrency(debt.remaining)} (Vence: ${new Date(debt.dueDate).toLocaleDateString('es-CL')})`
+                            : `Deuda de ${formatCurrency(debt.remaining)} (Vence: ${new Date(debt.dueDate).toLocaleDateString('es-CL')})`;
+
+                          const shortLabel = fullLabel.length > 50 ? `${fullLabel.slice(0, 47)}…` : fullLabel;
+
+                          return (
+                            <option key={debt.id} value={debt.id} title={fullLabel}>
+                              {shortLabel}
+                            </option>
+                          );
+                        })}
                       </select>
+                      {/* Mostrar label completo en móvil cuando hay selección o foco */}
+                      <div className="md:hidden mt-2">
+                        {selectedDebtLabel && (
+                          <p className="text-sm text-gray-600 truncate">{selectedDebtLabel}</p>
+                        )}
+                      </div>
                     </div>
                     
                     <div>
@@ -301,8 +339,10 @@ export default function PaymentsPage() {
                           </h3>
                           {debtInfo && (
                             <p className="text-gray-600 text-sm">
-                              Pago a deuda de {formatCurrency(debtInfo.total)} 
-                              (Restante: {formatCurrency(debtInfo.remaining)})
+                              Pago a deuda {debtInfo.name && debtInfo.name.trim()
+                                ? `"${debtInfo.name}" — de ${formatCurrency(debtInfo.total)}`
+                                : `de ${formatCurrency(debtInfo.total)}`}
+                              {` (Restante: ${formatCurrency(debtInfo.remaining)})`}
                             </p>
                           )}
                           <p className="text-gray-500 text-xs mt-1">

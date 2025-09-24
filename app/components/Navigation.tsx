@@ -11,6 +11,10 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
 
+  const displayName = user
+    ? ([user.firstName, user.lastName].filter(Boolean).join(' ').trim() || user.email)
+    : '';
+
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: '📊' },
     { href: '/expenses', label: 'Gastos', icon: '💰' },
@@ -36,8 +40,8 @@ const Navigation = () => {
                 <h1 className="text-xl font-bold text-indigo-600">Ordena tu Plata</h1>
               </Link>
               {user && (
-                <p className="text-sm text-gray-600 mt-1">
-                  Hola, {user.email}
+                <p className="text-sm text-gray-600 mt-1 max-w-xs truncate">
+                  Hola, {displayName}
                 </p>
               )}
             </div>
