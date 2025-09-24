@@ -24,3 +24,31 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }
+
+/* Ensure form controls use the page foreground so text is readable
+   and provide appropriate placeholder colors for light/dark themes. */
+/* Use a slightly lighter dark for form text to match label tone */
+:is(input[type="text"], input[type="number"], input[type="date"], input[type="email"], input[type="password"], textarea, select) {
+  color: #374151; /* tailwind text-gray-700 tone */
+  caret-color: #374151;
+  -webkit-text-fill-color: #374151;
+}
+
+/* Stronger placeholder contrast */
+input::placeholder,
+textarea::placeholder {
+  color: rgba(0,0,0,0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :is(input[type="text"], input[type="number"], input[type="date"], input[type="email"], input[type="password"], textarea, select) {
+    color: #374151; /* tailwind text-gray-700 tone */
+  caret-color: #374151;
+  -webkit-text-fill-color: #374151;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: rgba(255,255,255,0.6);
+  }
+}
